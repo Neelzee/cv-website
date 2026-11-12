@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: apt-get update && apt-get install -y --no-install-recommends libpq-dev
+      - run: apt-get install -y --no-install-recommends curl ca-certificates && scripts/fetch-htmx.sh
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --locked
       - run: |
