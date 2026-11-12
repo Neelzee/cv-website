@@ -40,11 +40,14 @@ jobs:
           name: release
           path: out
       - name: Set up SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           install -m700 -d ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          # The VM's public host key (not a secret). Regenerate with: ssh-keyscan -t ed25519 nilsmf.no
+          echo "nilsmf.no ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMqd6bAcvTxSnyEE9pPydnaj7SPuzalPvhyq+y+SGx2w" > ~/.ssh/known_hosts
       - name: Upload
         run: |
           chmod +x out/cv-webpage
