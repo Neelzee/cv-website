@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS project_tag_links;
+DROP TABLE IF EXISTS image_tag_links;
+DROP TABLE IF EXISTS image_links;
+DROP TABLE IF EXISTS project_tags;
+DROP TABLE IF EXISTS image_tags;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS admins;

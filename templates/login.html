@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" action="/login" class="mx-auto max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+  {% if let Some(error) = error %}
+    <p role="alert" class="text-sm font-medium text-red-700">{{ error }}</p>
+  {% endif %}
+  <label>
+    Brukarnamn: <input type="text" name="username" id="username" autocomplete="username" required>
+  </label>
+  <label>
+    Passord: <input type="password" name="password" id="password" autocomplete="current-password" required>
+  </label>
+  <button type="submit">Log inn</button>
+</form>
+{% endblock %}

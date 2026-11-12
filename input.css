@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@source "./templates";
+@source "./src";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+  }
+
+  main a:not(.btn) {
+    @apply text-indigo-700 underline-offset-2 hover:underline;
+  }
+
+  main label {
+    @apply mt-4 block text-sm font-medium text-slate-700;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  textarea {
+    @apply mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none;
+  }
+
+  textarea {
+    @apply min-h-32 font-mono;
+  }
+
+  /* Tailwind's reset strips the file picker down to plain text, so it's styled like the buttons */
+  input[type="file"] {
+    @apply mt-1 block w-full text-sm text-slate-600;
+  }
+
+  input[type="file"]::file-selector-button {
+    @apply mr-3 cursor-pointer rounded-md border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100;
+  }
+
+  input[type="checkbox"] {
+    @apply ml-2 size-4 rounded border-slate-300 align-middle accent-indigo-600;
+  }
+
+  fieldset {
+    @apply mt-6 rounded-lg border border-slate-200 bg-white p-4;
+  }
+
+  legend {
+    @apply px-2 text-sm font-semibold text-slate-700;
+  }
+
+  button {
+    @apply cursor-pointer rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100;
+  }
+
+  button[type="submit"] {
+    @apply mt-6 border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+
+  h2 {
+    @apply mt-10 text-2xl font-semibold tracking-tight text-slate-900;
+  }
+}
+
+@layer components {
+  .mini-project {
+    @apply block rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-indigo-300 hover:shadow-md;
+  }
+
+  .mini-project h4 {
+    @apply text-lg font-semibold text-slate-900;
+  }
+
+  .mini-project .short_description {
+    @apply mt-1 text-sm text-slate-600;
+  }
+
+  .admin-project {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .admin-project > a:first-child {
+    @apply mr-auto;
+  }
+
+  .admin-project .short_description {
+    @apply basis-full order-last;
+  }
+
+  .tags {
+    @apply my-6 flex flex-wrap gap-2;
+  }
+
+  .tags a {
+    @apply rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700 no-underline hover:border-indigo-300 hover:bg-indigo-50 hover:no-underline;
+  }
+
+  .tags li {
+    @apply list-none;
+  }
+
+  .actions {
+    @apply mb-6 flex items-center gap-4 text-sm;
+  }
+
+  #tag-list {
+    @apply flex flex-wrap gap-x-4;
+  }
+
+  #tag-list label {
+    @apply mt-2 inline-flex items-center gap-1;
+  }
+
+  #images figure {
+    @apply mt-4 flex items-start gap-4;
+  }
+
+  #preview {
+    @apply prose prose-slate mt-4 max-w-none rounded-lg border border-slate-200 bg-white p-6;
+  }
+}
+
+@layer utilities {
+  .actions button[type="submit"] {
+    @apply mt-0 border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+  }
+}

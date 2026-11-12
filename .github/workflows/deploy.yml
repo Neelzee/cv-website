@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Debian 13 matches the VM, so the binary links against a compatible glibc/libpq
+    container: rust:1-trixie
+    steps:
+      - uses: actions/checkout@v4
+      - run: apt-get update && apt-get install -y --no-install-recommends libpq-dev
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked
+      - run: |
+          mkdir out
+          cp target/release/cv-webpage out/
+          cp -r static out/static
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: out
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: out
+      - name: Set up SSH
+        run: |
+          install -m700 -d ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Upload
+        run: |
+          chmod +x out/cv-webpage
+          # rsync replaces files via rename, so the running binary is never overwritten in place
+          rsync -e "ssh -o IdentitiesOnly=yes" out/cv-webpage deploy@nilsmf.no:/opt/cv-webpage/
+          # --delete only touches static/; .env and uploads/ live outside it
+          rsync -e "ssh -o IdentitiesOnly=yes" -r --delete out/static/ deploy@nilsmf.no:/opt/cv-webpage/static/
+      - name: Restart
+        run: ssh deploy@nilsmf.no sudo systemctl restart cv-webpage

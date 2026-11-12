@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+{% if let Some(admin) = admin %}
+<nav class="actions">
+  <a href="/project/new" class="btn rounded-md bg-indigo-600 px-3 py-1.5 font-medium text-white hover:bg-indigo-700">Nytt prosjekt</a>
+  <a href="/admin">Admin</a>
+  <form method="post" action="/logout" class="ml-auto">
+    <button type="submit">Log ut</button>
+  </form>
+</nav>
+{% endif %}
+<nav class="tags">
+  <a href="/projects">alle</a>
+  {% for tag in tags %}
+    <a href="/projects?tag={{ tag.tag|urlencode_strict }}">{{ tag.tag }}</a>
+  {% endfor %}
+</nav>
+<div class="space-y-4">
+{% for project in projects %}
+  {% if admin.is_some() %}
+    {% include "partials/admin-project.html" %}
+  {% else %}
+    {% include "partials/preview-project.html" %}
+  {% endif %}
+{% endfor %}
+</div>
+{% if total_pages > 1 %}
+<nav class="actions mt-8 justify-center" aria-label="Sider">
+  {% if page > 1 %}
+    <a href="{{ self.page_url(page - 1) }}" rel="prev">&larr; Førre</a>
+  {% endif %}
+  <span>Side {{ page }} av {{ total_pages }}</span>
+  {% if page < total_pages %}
+    <a href="{{ self.page_url(page + 1) }}" rel="next">Neste &rarr;</a>
+  {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

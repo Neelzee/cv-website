@@ -1,0 +1,13 @@
+<figure id="image-{{ image.id }}">
+  <img src="/image/{{ image.slug }}" alt="{{ image.alt }}" width="200" class="rounded-md border border-slate-200">
+  <figcaption>
+    <code class="select-all">![{{ image.alt }}](/image/{{ image.slug }})</code>
+    <button type="button" data-copy>
+      Kopi
+    </button>
+    <button hx-post="/images/{{ image.slug }}/delete" hx-target="#image-{{ image.id }}" hx-swap="outerHTML"
+            hx-confirm="Delete '{{ image.slug }}'?">
+      Slett
+    </button>
+  </figcaption>
+</figure>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="{% block lang %}no{% endblock %}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {% block title %}
+      {% if title is defined %}
+        {{ title }}
+      {% else %}
+        Nils Michael CV
+      {% endif %}
+      {% endblock %}
+    </title>
+    {% block meta %}{% endblock %}
+    <link rel="stylesheet" href="/static/tailwind.css">
+    <script src="/static/htmx-2.0.4.min.js" defer></script>
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <nav class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+        <a href="/" class="text-lg font-semibold tracking-tight text-slate-900">Nils Michael Fitjar</a>
+        <div class="flex gap-6 text-sm font-medium text-slate-600">
+          <a href="/" class="hover:text-indigo-700">Home</a>
+          <a href="/projects" class="hover:text-indigo-700">Projects</a>
+        </div>
+      </nav>
+    </header>
+    <main class="mx-auto w-full max-w-4xl flex-1 px-6 py-10">
+      {% block content %}
+        <p>Placeholder content</p>
+      {% endblock %}
+    </main>
+    <footer class="border-t border-slate-200 bg-white">
+      <nav class="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-8 gap-y-2 px-6 py-8 text-sm text-slate-600 [&_a:hover]:text-indigo-700">
+        {% for link in site.links %}
+          <a href="{{ link.url }}" rel="me noopener">{{ link.label }}</a>
+        {% endfor %}
+        {% if site.has_cv %}
+          <a href="/cv.pdf">CV (PDF)</a>
+        {% endif %}
+      </nav>
+    </footer>
+  </body>
+</html>

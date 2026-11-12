@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block head %}<script src="/static/admin.js" defer></script>{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ action }}">
+  <label>
+    Tittel:: <input type="text" name="title" id="title" value="{{ project.title }}" required>
+  </label>
+  <label>
+    Slug: <input type="text" name="slug" id="slug" value="{{ project.slug }}">
+  </label>
+  <label>
+    Beskrivelse:* <textarea name="short_description" id="short_description" required>{{ project.short_description }}</textarea>
+  </label>
+  <label>
+    Post (markdown):*
+    <textarea name="post" id="post" required
+              hx-post="/preview" hx-trigger="input changed delay:300ms, load" hx-target="#preview">{{ project.post }}</textarea>
+  </label>
+  <label>Språk:
+    <select id="language" name="language">
+      {% for sp in Langauge::languages() %}
+        <option value="{{ sp.value() }}"{% if sp == language %} selected{% endif %}>{{ sp.to_long() }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <fieldset>
+    <legend>Tags</legend>
+    <div id="tag-list">
+      {% for (tag, checked, used_by_others) in tags %}
+        {% include "partials/tag-checkbox.html" %}
+      {% endfor %}
+    </div>
+    <input type="text" id="new_tag" name="new_tag" placeholder="New tag">
+    <button type="button" hx-post="/api/tags" hx-include="#new_tag" hx-target="#tag-list" hx-swap="beforeend"
+            data-clear="#new_tag">
+      Add tag
+    </button>
+  </fieldset>
+  <label>
+    Metadata (JSON): <textarea name="metadata" id="metadata">{{ project.metadata_text() }}</textarea>
+  </label>
+  <label>
+    CSS: <textarea name="css" id="css">{{ project.css_text() }}</textarea>
+  </label>
+  <label>
+    JS: <textarea name="js" id="js">{{ project.js_text() }}</textarea>
+  </label>
+  <label>
+    Publisert: <input type="checkbox" name="published" id="published"{% if project.published %} checked{% endif %}>
+  </label>
+  <label>
+    Pinned: <input type="checkbox" name="pinned" id="pinned"{% if project.pinned %} checked{% endif %}>
+  </label>
+  <button type="submit">Lagre</button>
+</form>
+<fieldset id="image-upload">
+  <legend>Bildar</legend>
+  <label>Slug: <input type="text" name="slug"></label>
+  <label>Alt: <input type="text" name="alt"></label>
+  <label>Fil: <input type="file" name="file" accept="image/*"></label>
+  <button type="button" hx-post="/images" hx-include="#image-upload" hx-encoding="multipart/form-data"
+          hx-target="#images" hx-swap="afterbegin"
+          data-clear="#image-upload input">
+    Last opp
+  </button>
+  <div id="images">
+    {% for image in images %}
+      {% include "partials/image.html" %}
+    {% endfor %}
+  </div>
+</fieldset>
+<h2>Preview</h2>
+<div id="preview"></div>
+{% endblock %}

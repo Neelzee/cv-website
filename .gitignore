@@ -1,0 +1,13 @@
+.direnv
+
+
+# Added by cargo
+
+/target
+
+db-data/
+pgadmin-data/
+.env
+uploads/
+*.pdf
+htmx-*.min.js

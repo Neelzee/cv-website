@@ -1,0 +1,17 @@
+<article id="project-{{ project.id }}" class="mini-project admin-project">
+  <a href="/project/{{ project.slug }}"><h4>{{ project.title }}</h4></a>
+  <section class="short_description">
+    {{ project.short_description }}
+  </section>
+  <a href="/project/{{ project.slug }}/edit">Edit</a>
+  <button hx-post="/project/{{ project.slug }}/toggle/published" hx-target="#project-{{ project.id }}" hx-swap="outerHTML">
+    {% if project.published %}Unpublish{% else %}Publish{% endif %}
+  </button>
+  <button hx-post="/project/{{ project.slug }}/toggle/pinned" hx-target="#project-{{ project.id }}" hx-swap="outerHTML">
+    {% if project.pinned %}Unpin{% else %}Pin{% endif %}
+  </button>
+  <button hx-post="/project/{{ project.slug }}/delete" hx-target="#project-{{ project.id }}" hx-swap="outerHTML"
+          hx-confirm="Delete '{{ project.title }}'?">
+    Delete
+  </button>
+</article>
