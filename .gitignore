@@ -11,3 +11,4 @@ pgadmin-data/
 uploads/
 *.pdf
 htmx-*.min.js
+static/tailwind.css
