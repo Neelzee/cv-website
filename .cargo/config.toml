@@ -1,0 +1,4 @@
+# `cargo run` goes through this script, which seeds dummy data before starting the app.
+# Running target/debug/cv-webpage directly does not seed.
+[target.'cfg(all())']
+runner = "scripts/dev-run.sh"

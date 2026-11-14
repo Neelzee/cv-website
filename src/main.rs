@@ -63,6 +63,8 @@ pub mod admin;
 pub mod models;
 pub mod rate_limit;
 pub mod schema;
+#[cfg(debug_assertions)]
+pub mod seed;
 pub mod templates;
 
 pub const TOKEN: &'static str = "token";
@@ -1255,6 +1257,18 @@ async fn main() -> Result<()> {
             .next()
             .context("Usage: cv-webpage set-password <username>")?;
         return set_password(&db_url, &username);
+    }
+
+    // Debug builds only: `seed` is run by scripts/dev-run.sh (the cargo runner) on `cargo run`
+    #[cfg(debug_assertions)]
+    if env::args().nth(1).as_deref() == Some("seed") {
+        let upload_dir =
+            PathBuf::from(env::var("UPLOAD_DIR").unwrap_or_else(|_| "uploads".to_string()));
+        let mut conn = PgConnection::establish(&db_url)?;
+        if env::args().nth(2).as_deref() != Some("--if-empty") || seed::is_empty(&mut conn)? {
+            seed::seed(&mut conn, &upload_dir)?;
+        }
+        return Ok(());
     }
 
     let secret = required_env("JWT_SECRET")?;
