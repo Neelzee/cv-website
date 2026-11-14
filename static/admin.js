@@ -98,3 +98,11 @@ document.getElementById("open-full-preview")?.addEventListener("click", () => {
 previewModal?.addEventListener("click", (e) => {
   if (e.target === previewModal || e.target.closest("[data-close]")) previewModal.close();
 });
+
+document.getElementById("image-search")?.addEventListener("input", (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll("#images figure").forEach((fig) => {
+    const slug = fig.querySelector("legend")?.textContent.toLowerCase() ?? "";
+    fig.style.display = slug.includes(q) ? "" : "none";
+  });
+});

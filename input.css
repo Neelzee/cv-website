@@ -124,8 +124,28 @@
     @apply mt-2 inline-flex items-center gap-1;
   }
 
+  #images {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  #images > p {
+    @apply col-span-2;
+  }
+
   #images figure {
-    @apply mt-4 flex items-start gap-4;
+    @apply flex min-w-0 flex-col gap-2;
+  }
+
+  #images figure img {
+    @apply h-auto w-full;
+  }
+
+  #images figcaption {
+    @apply flex flex-wrap items-center gap-2 text-xs;
+  }
+
+  #images figcaption code {
+    @apply w-full break-all;
   }
 
   #preview {
