@@ -1,6 +1,6 @@
 <label>
   <input type="checkbox" name="tag_{{ tag.id }}"{% if checked %} checked{% endif %}> {{ tag.tag }}
-  <button type="button" title="Delete tag" aria-label="Delete tag {{ tag.tag }}"
+  <button type="button" class="ml-1 px-1.5 py-0 text-xs leading-4 shadow-none" title="Delete tag" aria-label="Delete tag {{ tag.tag }}"
           hx-post="/api/tags/{{ tag.id }}/delete" hx-target="closest label" hx-swap="outerHTML"
           hx-confirm="{% if used_by_others.clone() > 0 %}Warning: '{{ tag.tag }}' is used by {{ used_by_others }} other project(s). Deleting it removes it from them too. Delete anyway?{% else %}Delete tag '{{ tag.tag }}'?{% endif %}">&times;</button>
 </label>
