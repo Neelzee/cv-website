@@ -38,11 +38,7 @@ use actix_web::{
 use anyhow::{Context, Result, anyhow, bail};
 use askama::Template;
 use diesel::{
-    Connection, ExpressionMethods, OptionalExtension, PgConnection,
-    QueryDsl, QueryResult, RunQueryDsl, SelectableHelper,
-    dsl::{insert_into, not, now},
-    r2d2::{ConnectionManager, Pool, PooledConnection},
-    result::{DatabaseErrorKind, Error as DieselError},
+    BoolExpressionMethods, Connection, ExpressionMethods, OptionalExtension, PgConnection, QueryDsl, QueryResult, RunQueryDsl, SelectableHelper, dsl::{insert_into, not, now}, r2d2::{ConnectionManager, Pool, PooledConnection}, result::{DatabaseErrorKind, Error as DieselError},
 };
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use dotenvy::dotenv;
