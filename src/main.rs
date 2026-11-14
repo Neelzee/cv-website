@@ -329,11 +329,6 @@ impl ProjectForm {
             .collect::<std::result::Result<Vec<i32>, _>>()
             .map_err(|err| ErrorBadRequest(format!("Failed to parse int: {err:?}")))?;
 
-        let metadata = non_empty(self.metadata)
-            .map(|m| from_str(&m))
-            .transpose()
-            .map_err(|err| ErrorBadRequest(format!("Metadata is not valid JSON: {err}")))?;
-
         let slug = non_empty(self.slug)
             .map(|s| slugify(&s))
             .unwrap_or_else(|| slugify(&self.title));
@@ -347,7 +342,6 @@ impl ProjectForm {
                 slug,
                 title: self.title,
                 short_description: self.short_description,
-                metadata,
                 post: self.post,
                 language: self.language,
                 published: self.published.is_some(),
@@ -656,7 +650,6 @@ async fn new_project(
         slug: changes.slug,
         title: changes.title,
         short_description: changes.short_description,
-        metadata: changes.metadata,
         post: changes.post,
         language: changes.language,
         published: changes.published,
@@ -841,7 +834,6 @@ async fn preview_full(
         slug: changes.slug,
         title: changes.title,
         short_description: changes.short_description,
-        metadata: changes.metadata,
         post: changes.post,
         language: changes.language,
         published: changes.published,

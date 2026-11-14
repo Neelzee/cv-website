@@ -21,7 +21,6 @@ pub struct Project {
     pub slug: String,
     pub title: String,
     pub short_description: String,
-    pub metadata: Option<Value>,
     pub post: String,
     pub language: Langauge,
     pub published: bool,
@@ -34,14 +33,6 @@ pub struct Project {
 impl Project {
     pub fn render(&self) -> String {
         render_markdown(&self.post)
-    }
-
-    // Helpers for pre-filling the edit form
-    pub fn metadata_text(&self) -> String {
-        self.metadata
-            .as_ref()
-            .and_then(|m| serde_json::to_string_pretty(m).ok())
-            .unwrap_or_default()
     }
 
     pub fn css_text(&self) -> &str {
@@ -118,7 +109,6 @@ pub struct InsertProject {
     pub slug: String,
     pub title: String,
     pub short_description: String,
-    pub metadata: Option<Value>,
     pub post: String,
     pub language: Langauge,
     pub published: bool,
@@ -135,7 +125,6 @@ pub struct ProjectChanges {
     pub slug: String,
     pub title: String,
     pub short_description: String,
-    pub metadata: Option<Value>,
     pub post: String,
     pub language: Langauge,
     pub published: bool,

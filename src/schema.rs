@@ -70,7 +70,6 @@ diesel::table! {
         slug -> Text,
         title -> Text,
         short_description -> Text,
-        metadata -> Nullable<Json>,
         js -> Nullable<Text>,
         css -> Nullable<Text>,
         post -> Text,
