@@ -18,6 +18,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: apt-get update && apt-get install -y --no-install-recommends libpq-dev
       - run: apt-get install -y --no-install-recommends curl ca-certificates && scripts/fetch-htmx.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          npm install --no-save --no-package-lock @tailwindcss/cli@4 @tailwindcss/typography
+          npx @tailwindcss/cli -i input.css -o static/tailwind.css --minify
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --locked
       - run: |
@@ -46,14 +52,11 @@ jobs:
           install -m700 -d ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          # The VM's public host key (not a secret). Regenerate with: ssh-keyscan -t ed25519 nilsmf.no
           echo "nilsmf.no ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMqd6bAcvTxSnyEE9pPydnaj7SPuzalPvhyq+y+SGx2w" > ~/.ssh/known_hosts
       - name: Upload
         run: |
           chmod +x out/cv-webpage
-          # rsync replaces files via rename, so the running binary is never overwritten in place
           rsync -e "ssh -o IdentitiesOnly=yes" out/cv-webpage deploy@nilsmf.no:/opt/cv-webpage/
-          # --delete only touches static/; .env and uploads/ live outside it
           rsync -e "ssh -o IdentitiesOnly=yes" -r --delete out/static/ deploy@nilsmf.no:/opt/cv-webpage/static/
       - name: Restart
         run: ssh deploy@nilsmf.no sudo systemctl restart cv-webpage
