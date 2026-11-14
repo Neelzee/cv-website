@@ -182,8 +182,8 @@ pub fn seed(conn: &mut PgConnection, upload_dir: &Path) -> Result<()> {
                     ),
                     language,
                     published: n != 5 && n % 7 != 6,
-                    // The site only ever has one pinned project, and migrations already pin one
-                    pinned: false,
+                    // Exactly one seeded project is pinned
+                    pinned: n == 0,
                     admin_id,
                     ..Default::default()
                 })
