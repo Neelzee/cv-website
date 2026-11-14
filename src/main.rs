@@ -829,6 +829,50 @@ async fn preview(_auth: ProjectWriter, web::Form(form): Form<PreviewForm>) -> Ht
     html(render_markdown(&form.post))
 }
 
+/// Renders the whole project page from the unsaved form, to be shown in the editor's preview
+/// iframe. Nothing is written to the database.
+#[post("/preview/full")]
+async fn preview_full(
+    _auth: ProjectWriter,
+    app: web::Data<AppState>,
+    web::Form(form): Form<ProjectForm>,
+) -> Result<HttpResponse, Error> {
+    let (changes, _tag_ids) = form.parse()?;
+
+    let project = Project {
+        slug: changes.slug,
+        title: changes.title,
+        short_description: changes.short_description,
+        metadata: changes.metadata,
+        post: changes.post,
+        language: changes.language,
+        published: changes.published,
+        pinned: changes.pinned,
+        css: changes.css,
+        js: changes.js,
+        ..Default::default()
+    };
+
+    let mut res = render_page(
+        StatusCode::OK,
+        ProjectTemplate {
+            description: meta_description(&project.short_description),
+            language: project.language,
+            project,
+            tags: Vec::new(),
+            is_admin: false,
+            site: app.site(),
+        },
+    )?;
+
+    // Only the editor itself may frame this, and the project's own script is inline
+    let headers = res.headers_mut();
+    headers.insert(X_FRAME_OPTIONS, HeaderValue::from_static("SAMEORIGIN"));
+    headers.insert(CONTENT_SECURITY_POLICY, HeaderValue::from_static(CSP_PREVIEW));
+
+    Ok(res)
+}
+
 #[derive(Debug, Deserialize)]
 pub struct NewTagForm {
     new_tag: String,
@@ -1081,6 +1125,8 @@ const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 const CSP: &str ="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 
 /// For project pages with their own inline script
+/// The editor's preview iframe: like `CSP_INLINE_SCRIPTS`, but framable by our own pages
+const CSP_PREVIEW: &str = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
 const CSP_INLINE_SCRIPTS: &str = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 
 /// Renders the 404 page, also for paths no route matches. htmx requests keep the plain response,
@@ -1265,6 +1311,7 @@ async fn main() -> Result<()> {
             .service(delete_project)
             .service(toggle_project)
             .service(preview)
+            .service(preview_full)
             .service(new_tag)
             .service(delete_tag)
             .service(upload_image)

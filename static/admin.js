@@ -87,3 +87,14 @@ if (titleInput && slugInput) {
     auto = slugInput.value === "";
   });
 }
+
+const previewModal = document.getElementById("full-preview-modal");
+
+document.getElementById("open-full-preview")?.addEventListener("click", () => {
+  document.getElementById("project-form").requestSubmit(
+    document.getElementById("full-preview-submit"));
+  previewModal.showModal();
+});
+previewModal?.addEventListener("click", (e) => {
+  if (e.target === previewModal || e.target.closest("[data-close]")) previewModal.close();
+});
