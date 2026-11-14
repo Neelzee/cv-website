@@ -3,9 +3,32 @@
 {% block head %}<script src="/static/admin.js" defer></script>{% endblock %}
 
 {% block content %}
+<div
+  class="sticky top-[61px] z-[5] -mx-6 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white/90 px-6 py-2 backdrop-blur"
+  >
+  <button id="open-button-upload-modal">Last opp bildar</button>
+  <button id="open-button-image-modal">Sjå bildar</button>
+  <div
+    class="ml-auto flex items-center gap-2"
+  >
+    <input
+      type="text"
+      id="new_tag"
+      name="new_tag"
+      placeholder="New tag"
+      class="mt-0 w-40"
+    >
+    <button type="button" hx-post="/api/tags" hx-include="#new_tag" hx-target="#tag-list" hx-swap="beforeend"
+            data-clear="#new_tag">
+      Legg til tag
+    </button>
+  </div>
+</div>
+<article class="flex">
+<section class="flex-1">
 <form method="post" action="{{ action }}">
   <label>
-    Tittel:: <input type="text" name="title" id="title" value="{{ project.title }}" required>
+    Tittel:* <input type="text" name="title" id="title" value="{{ project.title }}" required>
   </label>
   <label>
     Slug: <input type="text" name="slug" id="slug" value="{{ project.slug }}">
@@ -28,15 +51,14 @@
   <fieldset>
     <legend>Tags</legend>
     <div id="tag-list">
-      {% for (tag, checked, used_by_others) in tags %}
-        {% include "partials/tag-checkbox.html" %}
-      {% endfor %}
+      {% if tags.is_empty() %}
+        <p>Ingen tags</p>
+      {% else %}
+        {% for (tag, checked, used_by_others) in tags %}
+          {% include "partials/tag-checkbox.html" %}
+        {% endfor %}
+      {% endif %}
     </div>
-    <input type="text" id="new_tag" name="new_tag" placeholder="New tag">
-    <button type="button" hx-post="/api/tags" hx-include="#new_tag" hx-target="#tag-list" hx-swap="beforeend"
-            data-clear="#new_tag">
-      Add tag
-    </button>
   </fieldset>
   <label>
     Metadata (JSON): <textarea name="metadata" id="metadata">{{ project.metadata_text() }}</textarea>
@@ -55,22 +77,47 @@
   </label>
   <button type="submit">Lagre</button>
 </form>
-<fieldset id="image-upload">
-  <legend>Bildar</legend>
-  <label>Slug: <input type="text" name="slug"></label>
-  <label>Alt: <input type="text" name="alt"></label>
-  <label>Fil: <input type="file" name="file" accept="image/*"></label>
-  <button type="button" hx-post="/images" hx-include="#image-upload" hx-encoding="multipart/form-data"
-          hx-target="#images" hx-swap="afterbegin"
-          data-clear="#image-upload input">
-    Last opp
-  </button>
-  <div id="images">
-    {% for image in images %}
-      {% include "partials/image.html" %}
-    {% endfor %}
+</section>
+</article>
+<dialog id="upload-image-modal"
+  class="m-auto w-full max-w-lg rounded-lg border border-slate-200 p-0 shadow-xl backdrop:bg-slate-900/50"
+>
+  <button
+    type="button"
+    aria-label="Lukk"
+    class="absolute top-2 right-2 border-0 shadow-none close-button-upload-modal"
+    >x</button>
+  <fieldset id="image-upload" class="mt-0 border-0">
+    <label>Slug: <input type="text" name="slug"></label>
+    <label>Alt: <input type="text" name="alt" autofocus></label>
+    <label>Fil: <input type="file" name="file" accept="image/*"></label>
+    <button type="button" hx-post="/images" hx-include="#image-upload" hx-encoding="multipart/form-data"
+            hx-target="#images" hx-swap="afterbegin"
+            data-clear="#image-upload input">
+      Last opp
+    </button>
+  </fieldset>
+</dialog>
+<dialog
+  id="image-modal"
+  class="m-auto w-full max-w-lg rounded-lg border border-slate-200 p-0 shadow-xl backdrop:bg-slate-900/50"
+>
+  <button type="button" aria-label="Lukk"
+    class="absolute top-2 right-2 border-0 shadow-none close-button-upload-modal">×</button>
+
+  <div class="group p-4 pr-10">
+    <h2 class="mt-0 text-lg">Bildar</h2>
+
+    <div id="images" class="mt-4 min-h-24">
+      <p class="py-6 text-center text-sm text-slate-500 group-has-[figure]:hidden">
+        Ingen bildar
+      </p>
+      {% for image in images %}
+        {% include "partials/image.html" %}
+      {% endfor %}
+    </div>
   </div>
-</fieldset>
+</dialog>
 <h2>Preview</h2>
 <div id="preview"></div>
 {% endblock %}
