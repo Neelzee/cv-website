@@ -76,6 +76,7 @@ pub struct ImageItem {
 #[template(path = "admin.html")]
 pub struct AdminTemplate {
     pub site: Site,
+    pub status: crate::admin::Status,
 }
 
 #[derive(Template, WebTemplate)]

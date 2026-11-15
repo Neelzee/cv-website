@@ -75,6 +75,7 @@ pub struct AppState {
     pub site_url: String,
     pub login_limiter: LoginLimiter,
     pub dummy_hash: String,
+    pub started: std::time::Instant,
     site: RwLock<Site>,
 }
 
@@ -1287,6 +1288,7 @@ async fn main() -> Result<()> {
         site_url,
         login_limiter: LoginLimiter::default(),
         dummy_hash: bcrypt::hash("dummy", COST)?,
+        started: std::time::Instant::now(),
         site: RwLock::new(Site::default()),
     });
 
@@ -1320,6 +1322,7 @@ async fn main() -> Result<()> {
             .service(get_image)
             .service(delete_image)
             .service(admin::admin_page)
+            .service(admin::status)
             .service(admin::add_link)
             .service(admin::delete_link)
             .service(admin::upload_cv)

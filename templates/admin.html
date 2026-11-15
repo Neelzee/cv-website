@@ -6,6 +6,19 @@
 <h1 class="text-3xl font-bold tracking-tight text-slate-900">Admin</h1>
 
 <fieldset>
+  <legend>Status</legend>
+  <dl class="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
+    <dt class="font-medium">Commit</dt><dd><code>{{ status.commit }}</code> {{ status.commit_subject }}</dd>
+    <dt class="font-medium">Versjon</dt><dd>{{ status.version }} ({{ status.profile }})</dd>
+    <dt class="font-medium">Oppetid</dt><dd>{{ status.uptime }}</dd>
+    <dt class="font-medium">Database</dt><dd>{{ status.database }}</dd>
+    <dt class="font-medium">Prosjekt</dt><dd>{{ status.projects }} publisert, {{ status.drafts }} utkast</dd>
+    <dt class="font-medium">Bilete</dt><dd>{{ status.images }}</dd>
+  </dl>
+  <p><a href="/status">JSON</a></p>
+</fieldset>
+
+<fieldset>
   <legend>CV (PDF)</legend>
   {% if site.has_cv %}
     <p><a href="/cv.pdf">Noverande CV</a></p>
